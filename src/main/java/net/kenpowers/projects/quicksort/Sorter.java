@@ -67,10 +67,10 @@ public class Sorter {
         /**
          * Default constructor. Sets up the runnable object for execution.
          *
-         * @param values     The array to sort.
-         * @param left       The starting index of the section of the array to be sorted.
-         * @param right      The ending index of the section of the array to be sorted.
-         * @param count      The number of currently executing threads.
+         * @param values The array to sort.
+         * @param left   The starting index of the section of the array to be sorted.
+         * @param right  The ending index of the section of the array to be sorted.
+         * @param count  The number of currently executing threads.
          */
         public QuicksortRunnable(T[] values, int left, int right, AtomicInteger count) {
             this.values = values;
@@ -86,15 +86,7 @@ public class Sorter {
         @Override
         public void run() {
             if (left < right) {
-                T pivotValue = values[right];
-                int storeIndex = left;
-                for (int i = left; i < right; i++) {
-                    if (values[i].compareTo(pivotValue) < 0) {
-                        swap(values, i, storeIndex);
-                        storeIndex++;
-                    }
-                }
-                swap(values, storeIndex, right);
+                int storeIndex = partition();
                 count.getAndAdd(2);
                 pool.execute(new QuicksortRunnable<T>(values, left, storeIndex - 1, count));
                 pool.execute(new QuicksortRunnable<T>(values, storeIndex + 1, right, count));
@@ -106,16 +98,34 @@ public class Sorter {
         }
 
         /**
+         * Partitions the portion of the array between indexes left and right, inclusively, by moving all elements less
+         * than values[pivotIndex] before the pivot, and the equal or greater elements after it.
+         *
+         * @return
+         */
+        private int partition() {
+            T pivotValue = values[right];
+            int storeIndex = left;
+            for (int i = left; i < right; i++) {
+                if (values[i].compareTo(pivotValue) < 0) {
+                    swap(i, storeIndex);
+                    storeIndex++;
+                }
+            }
+            swap(storeIndex, right);
+            return storeIndex;
+        }
+
+        /**
          * Simple swap method.
          *
-         * @param input The array to swap values in.
          * @param left  The index of the first value to swap with the second value.
          * @param right The index of the second value to swap with the first value.
          */
-        private void swap(Object[] input, int left, int right) {
-            Object temp = input[left];
-            input[left] = input[right];
-            input[right] = temp;
+        private void swap(int left, int right) {
+            T temp = values[left];
+            values[left] = values[right];
+            values[right] = temp;
         }
     }
 }

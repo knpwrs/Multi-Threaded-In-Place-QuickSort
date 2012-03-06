@@ -16,7 +16,7 @@ public class Sorter {
     /**
      * Number of threads to use for sorting.
      */
-    public static final int N_THREADS = 2;
+    private static final int N_THREADS = Runtime.getRuntime().availableProcessors();
 
     /**
      * Thread pool used for executing sorting Runnables.

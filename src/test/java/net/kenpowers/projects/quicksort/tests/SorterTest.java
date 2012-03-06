@@ -1,6 +1,7 @@
 package net.kenpowers.projects.quicksort.tests;
 
 import net.kenpowers.projects.quicksort.Sorter;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Arrays;

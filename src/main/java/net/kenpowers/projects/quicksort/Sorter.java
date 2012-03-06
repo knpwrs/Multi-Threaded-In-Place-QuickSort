@@ -7,7 +7,6 @@
 
 package net.kenpowers.projects.quicksort;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,10 +29,14 @@ public class Sorter {
      * @param <T>   The type of the objects being sorted, must extend Comparable.
      */
     public static <T extends Comparable<T>> void quicksort(T[] input) {
-        AtomicInteger count = new AtomicInteger(1);
+        final AtomicInteger count = new AtomicInteger(1);
         pool.execute(new QuicksortRunnable<T>(input, 0, input.length - 1, count));
-        while (count.get() != 0) {
-
+        try {
+            synchronized (count) {
+                count.wait();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -64,10 +67,10 @@ public class Sorter {
         /**
          * Default constructor. Sets up the runnable object for execution.
          *
-         * @param values The array to sort.
-         * @param left   The starting index of the section of the array to be sorted.
-         * @param right  The ending index of the section of the array to be sorted.
-         * @param count The number of currently executing threads.
+         * @param values     The array to sort.
+         * @param left       The starting index of the section of the array to be sorted.
+         * @param right      The ending index of the section of the array to be sorted.
+         * @param count      The number of currently executing threads.
          */
         public QuicksortRunnable(T[] values, int left, int right, AtomicInteger count) {
             this.values = values;
@@ -96,7 +99,10 @@ public class Sorter {
                 pool.execute(new QuicksortRunnable<T>(values, left, storeIndex - 1, count));
                 pool.execute(new QuicksortRunnable<T>(values, storeIndex + 1, right, count));
             }
-            count.getAndDecrement();
+            synchronized (count) {
+                if (count.getAndDecrement() == 1)
+                    count.notify();
+            }
         }
 
         /**
@@ -106,7 +112,7 @@ public class Sorter {
          * @param left  The index of the first value to swap with the second value.
          * @param right The index of the second value to swap with the first value.
          */
-        private static void swap(Object[] input, int left, int right) {
+        private void swap(Object[] input, int left, int right) {
             Object temp = input[left];
             input[left] = input[right];
             input[right] = temp;

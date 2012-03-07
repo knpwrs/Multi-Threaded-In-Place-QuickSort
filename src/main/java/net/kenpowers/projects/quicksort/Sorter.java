@@ -102,7 +102,7 @@ public class Sorter {
          * Partitions the portion of the array between indexes left and right, inclusively, by moving all elements less
          * than values[pivotIndex] before the pivot, and the equal or greater elements after it.
          *
-         * @return
+         * @return The final index of the pivot value.
          */
         private int partition() {
             T pivotValue = values[right];

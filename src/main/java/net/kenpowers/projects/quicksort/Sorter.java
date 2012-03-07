@@ -81,7 +81,8 @@ public class Sorter {
 
         /**
          * The main logic. If the array is of two or more items this method partitions the appropriate section of the
-         * array and then creates two more runnables to sort the remaining sections; otherwise, we countdown the latch.
+         * array and then creates two more runnables to sort the remaining sections; otherwise, we decrement the task
+         * counter.
          */
         @Override
         public void run() {

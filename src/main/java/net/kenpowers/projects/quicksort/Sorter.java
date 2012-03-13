@@ -18,6 +18,11 @@ public class Sorter {
     private static final int N_THREADS = Runtime.getRuntime().availableProcessors();
 
     /**
+     * Multiple to use when determining when to fall back.
+     */
+    private static final int FALLBACK = 2;
+
+    /**
      * Thread pool used for executing sorting Runnables.
      */
     private static Executor pool = Executors.newFixedThreadPool(N_THREADS);
@@ -80,21 +85,37 @@ public class Sorter {
         }
 
         /**
-         * The main logic. If the array is of two or more items this method partitions the appropriate section of the
-         * array and then creates two more runnables to sort the remaining sections; otherwise, we decrement the task
-         * counter.
+         * The thread's run logic. When this thread is done doing its stuff it checks to see if all other threads are as
+         * well. If so, then we notify the count object so Sorter.quicksort stops blocking.
          */
         @Override
         public void run() {
-            if (left < right) {
-                int storeIndex = partition();
-                count.getAndAdd(2);
-                pool.execute(new QuicksortRunnable<T>(values, left, storeIndex - 1, count));
-                pool.execute(new QuicksortRunnable<T>(values, storeIndex + 1, right, count));
-            }
+            quicksort(left, right);
             synchronized (count) {
+                // AtomicInteger.getAndDecrement() returns the old value. If the old value is 1, then we know that the actual value is 0.
                 if (count.getAndDecrement() == 1)
                     count.notify();
+            }
+        }
+
+        /**
+         * Method which actually does the sorting. Falls back on recursion if there are a certain number of queued /
+         * running tasks.
+         *
+         * @param pLeft  The left index of the sub array to sort.
+         * @param pRight The right index of the sub array to sort.
+         */
+        private void quicksort(int pLeft, int pRight) {
+            if (pLeft < pRight) {
+                int storeIndex = partition(pLeft, pRight);
+                if (count.get() >= FALLBACK * N_THREADS) {
+                    quicksort(pLeft, storeIndex - 1);
+                    quicksort(storeIndex + 1, pRight);
+                } else {
+                    count.getAndAdd(2);
+                    pool.execute(new QuicksortRunnable<T>(values, pLeft, storeIndex - 1, count));
+                    pool.execute(new QuicksortRunnable<T>(values, storeIndex + 1, pRight, count));
+                }
             }
         }
 
@@ -102,18 +123,20 @@ public class Sorter {
          * Partitions the portion of the array between indexes left and right, inclusively, by moving all elements less
          * than values[pivotIndex] before the pivot, and the equal or greater elements after it.
          *
+         * @param pLeft
+         * @param pRight
          * @return The final index of the pivot value.
          */
-        private int partition() {
-            T pivotValue = values[right];
-            int storeIndex = left;
-            for (int i = left; i < right; i++) {
+        private int partition(int pLeft, int pRight) {
+            T pivotValue = values[pRight];
+            int storeIndex = pLeft;
+            for (int i = pLeft; i < pRight; i++) {
                 if (values[i].compareTo(pivotValue) < 0) {
                     swap(i, storeIndex);
                     storeIndex++;
                 }
             }
-            swap(storeIndex, right);
+            swap(storeIndex, pRight);
             return storeIndex;
         }
 

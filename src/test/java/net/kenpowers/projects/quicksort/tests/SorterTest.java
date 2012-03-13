@@ -21,11 +21,12 @@ public class SorterTest {
     public void testSort() {
         // Define some values to sort.
         Integer[] values = {0, 9, 2, 5, 1, 5, 2, 7, 9, 2, 5, 0, 5, 4, 1};
-        // Sort a copy of the values with the built in Java sorting implementation for comparison.
+        // Copy the values into a new array to sort with Java's built in implementation for comparison
         Integer[] sortedValues = new Integer[values.length];
         System.arraycopy(values, 0, sortedValues, 0, values.length);
+        // Java sort
         Arrays.sort(sortedValues);
-        // Sort the original values with the multi-threaded in-place quicksort.
+        // Multi-Threaded Quick Sort
         Sorter.quicksort(values);
         // Assert equality.
         assertArrayEquals(sortedValues, values);
@@ -38,17 +39,35 @@ public class SorterTest {
     public void largeTestSort() {
         // Generate an array of one million random integers.
         Random random = new Random(System.currentTimeMillis());
-        Integer[] values = new Integer[1000000];
+        Integer[] values = new Integer[10000000];
+        final long generateStart = System.currentTimeMillis();
         for (int i = 0; i < values.length; i++) {
             values[i] = random.nextInt();
         }
-        // Sort a copy of the values with the built in Java sorting implementation for comparison.
-        Integer[] sortedValues = new Integer[1000000];
+        final long generateEnd = System.currentTimeMillis();
+        System.out.printf("Generation time: %d (%d Integer Objects)%n", generateEnd - generateStart, values.length);
+
+        // Copy the values into a new array to sort with Java's built in implementation for comparison
+        Integer[] sortedValues = new Integer[10000000];
+        final long copyStart = System.currentTimeMillis();
         System.arraycopy(values, 0, sortedValues, 0, values.length);
+        final long copyEnd = System.currentTimeMillis();
+        System.out.println("Copy time: " + (copyEnd - copyStart));
+
+        // Start sorting
+        final long sortStartTime = System.currentTimeMillis();
+        // Java sort
         Arrays.sort(sortedValues);
-        // Sort the original values with the multi-threaded in-place quicksort.
+        final long sortTradeOffTime = System.currentTimeMillis();
+        // Multi-Threaded Quick Sort
         Sorter.quicksort(values);
+        final long sortEndTime = System.currentTimeMillis();
+
         // Assert equality.
         assertArrayEquals(sortedValues, values);
+
+        // Print Statistics
+        System.out.println("Java built in implementation: " + (sortTradeOffTime - sortStartTime));
+        System.out.println("Multi-threaded quick sort: " + (sortEndTime - sortTradeOffTime));
     }
 }

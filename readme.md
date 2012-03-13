@@ -10,13 +10,11 @@ Here are some sample outputs from the `largeTestSort` method (output will vary s
     Java built in implementation: 4115
     Multi-threaded quick sort: 1599
 
-    :::text
     Generation time: 866 (10000000 Integer Objects)
     Copy time: 7
     Java built in implementation: 4158
     Multi-threaded quick sort: 1491
 
-    :::text
     Generation time: 875 (10000000 Integer Objects)
     Copy time: 7
     Java built in implementation: 4062

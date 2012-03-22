@@ -2,7 +2,7 @@ To compile, you can either use `javac` and do everything manually or you can use
 
 Please note that this implementation targets Java 6 and therefore does *not* use the Fork/Join framework.
 
-Here are some sample outputs from the `largeTestSort` method (output will vary since sorted values are different every time):
+This implementation is designed to spawn threads up to a certain threshold and then fall back to recursion in order to avoid the overhead of constant context switching. Here are some sample outputs from the `largeTestSort` method (output will vary since sorted values are different every time):
 
     :::text
     Generation time: 887 (10000000 Integer Objects)

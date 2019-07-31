@@ -10,9 +10,10 @@ package net.kenpowers.projects.quicksort;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Comparator;
 
 
-public static class SorterComparator {
+public class SorterComparator {
     /**
      * Number of threads to use for sorting.
      */

@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.kenpowers.projects.quicksort</groupId>
+  <artifactId>quicksort</artifactId>
+  <packaging>jar</packaging>
+  <version>2012-03-13-SNAPSHOT</version>
+  <name>Multi Threaded In-Place QuickSort</name>
+  <description>parallel quick sort for Java 6 or newer</description>
+  <url>https://github.com/knpwrs/Multi-Threaded-In-Place-QuickSort/</url>
+
+  <licenses>
+    <license>
+        <name>MIT License</name>
+        <url>https://github.com/knpwrs/Multi-Threaded-In-Place-QuickSort/blob/master/LICENSE</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Kenneth Powers</name>
+      <email>pieroxy most likely at pieroxy dot net</email>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/knpwrs/Multi-Threaded-In-Place-QuickSort.git</connection>
+    <developerConnection>scm:git:ssh://github.com/knpwrs/Multi-Threaded-In-Place-QuickSort.git</developerConnection>
+    <url>https://github.com/knpwrs/Multi-Threaded-In-Place-QuickSort/tree/master</url>
+  </scm>
+
+  <issueManagement>
+      <url>https://github.com/knpwrs/Multi-Threaded-In-Place-QuickSort/issues</url>
+      <system>GitHub Issues</system>
+  </issueManagement>
+
+
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>4.11</junit.version>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals><goal>jar</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

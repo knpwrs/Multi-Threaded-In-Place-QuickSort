@@ -21,9 +21,9 @@ public class SorterTest {
      * Tests the Sorter implementation on small set of values.
      */
     
-    private static Comparator mycomparator = new Comparator <int>() 
+    private static Comparator mycomparator = new Comparator <Integer>() 
         { 
-            public int compare(int a, int b) 
+            public int compare(Integer a, Integer b) 
             { 
                 if (a < b) return -1; 
                 if (a > b) return 1; 
@@ -54,6 +54,7 @@ public class SorterTest {
      */
     @Test
     public void largeTestSort() {
+		System.out.println("largeTestSort");
         // Generate an array of one million random integers.
         Random random = new Random(System.currentTimeMillis());
         Integer[] values = new Integer[10000000];
@@ -95,6 +96,8 @@ public class SorterTest {
      */
     @Test
     public void largeTestSortComparator() {
+		 System.out.println("largeTestSortComparator");
+
         // Generate an array of one million random integers.
         Random random = new Random(System.currentTimeMillis());
         Integer[] values = new Integer[10000000];

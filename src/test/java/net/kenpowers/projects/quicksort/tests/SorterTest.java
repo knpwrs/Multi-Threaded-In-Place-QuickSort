@@ -20,6 +20,17 @@ public class SorterTest {
     /**
      * Tests the Sorter implementation on small set of values.
      */
+    
+    private static Comparator mycomparator = new Comparator <int>() 
+        { 
+            public int compare(int a, int b) 
+            { 
+                if (a < b) return -1; 
+                if (a > b) return 1; 
+                else return 0; 
+            }
+        };
+    
     @Test
     public void testSort() {
         // Define some values to sort.
@@ -31,17 +42,7 @@ public class SorterTest {
         Arrays.sort(sortedValues);
         // Multi-Threaded Quick Sort
         Sorter.quicksort(values);
-        
         // Multi-Threaded Quick Sort with comparator
-        Comparator mycomparator = new Comparator <int>() 
-        { 
-            public int compare(int a, int b) 
-            { 
-                if (a < b) return -1; 
-                if (a > b) return 1; 
-                else return 0; 
-            }
-        }
         SorterComparator.quicksort(values,mycomparator);
         
         // Assert equality.
@@ -77,6 +78,47 @@ public class SorterTest {
         final long sortTradeOffTime = System.currentTimeMillis();
         // Multi-Threaded Quick Sort
         Sorter.quicksort(values);
+        final long sortEndTime = System.currentTimeMillis();
+
+        // Assert equality.
+        assertArrayEquals(sortedValues, values);
+
+        // Print Statistics
+        System.out.println("Java built in implementation: " + (sortTradeOffTime - sortStartTime));
+        System.out.println("Multi-threaded quick sort: " + (sortEndTime - sortTradeOffTime));
+    }
+    
+    
+    
+    /**
+     * Tests the Sorter implementation on a larger set of values.
+     */
+    @Test
+    public void largeTestSortComparator() {
+        // Generate an array of one million random integers.
+        Random random = new Random(System.currentTimeMillis());
+        Integer[] values = new Integer[10000000];
+        final long generateStart = System.currentTimeMillis();
+        for (int i = 0; i < values.length; i++) {
+            values[i] = random.nextInt();
+        }
+        final long generateEnd = System.currentTimeMillis();
+        System.out.printf("Generation time: %d (%d Integer Objects)%n", generateEnd - generateStart, values.length);
+
+        // Copy the values into a new array to sort with Java's built in implementation for comparison
+        Integer[] sortedValues = new Integer[10000000];
+        final long copyStart = System.currentTimeMillis();
+        System.arraycopy(values, 0, sortedValues, 0, values.length);
+        final long copyEnd = System.currentTimeMillis();
+        System.out.println("Copy time: " + (copyEnd - copyStart));
+
+        // Start sorting
+        final long sortStartTime = System.currentTimeMillis();
+        // Java sort
+        Arrays.sort(sortedValues,mycomparator);
+        final long sortTradeOffTime = System.currentTimeMillis();
+        // Multi-Threaded Quick Sort
+        SorterComparator.quicksort(values,mycomparator);
         final long sortEndTime = System.currentTimeMillis();
 
         // Assert equality.

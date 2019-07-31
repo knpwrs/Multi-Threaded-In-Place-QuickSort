@@ -1,10 +1,13 @@
 package net.kenpowers.projects.quicksort.tests;
 
 import net.kenpowers.projects.quicksort.Sorter;
+import net.kenpowers.projects.quicksort.SorterComparator;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Random;
+
+import java.util.Comparator;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -28,6 +31,19 @@ public class SorterTest {
         Arrays.sort(sortedValues);
         // Multi-Threaded Quick Sort
         Sorter.quicksort(values);
+        
+        // Multi-Threaded Quick Sort with comparator
+        Comparator mycomparator = new Comparator <int>() 
+        { 
+            public int compare(int a, int b) 
+            { 
+                if (a < b) return -1; 
+                if (a > b) return 1; 
+                else return 0; 
+            }
+        }
+        SorterComparator.quicksort(values,mycomparator);
+        
         // Assert equality.
         assertArrayEquals(sortedValues, values);
     }
